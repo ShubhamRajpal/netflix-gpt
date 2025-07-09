@@ -1,42 +1,76 @@
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { LOGO } from "../utils/constants";
+import { useEffect } from "react";
+import { addUser, removeUser } from "../utils/userSlice";
 
 const Header = () => {
   
   const navigate = useNavigate();
-  const user  = useSelector(store => store.user);
+  const dispatch = useDispatch();
+  const user  = useSelector((store) => store.user);
   
   const handleSignOut = () => {
     signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        navigate("/");
-      })
+      .then(() => {})
       .catch((error) => {
         // An error happened.
+         navigate("/error");
       });
   };
+    
+    //Since I only want to call this api "onAuthStateChanged" once not everytime so we use it inside useEffect with empty array
+  // We could have used useDispatch for dispatching the actions for updating the userSlice of store in Login separately for sign in and sign up but we wanted to do it as one place so we are handling that logic in Body using firebase API
+  useEffect(() => {
+    let unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // When User sign in or sign up
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL
+          })
+        );
+        navigate("/browse");
+        //If the user is able to sign in successfully it will be redirected to browse page 
+        // navigate("/browse"); // Error : Since we have used routing in this component so we can use it only in children component like Login, Browse etc
+      } else {
+        // When User is signed out
+        dispatch(removeUser());
+        navigate("/");
+        //Otherise if user sign out 
+        // navigate("/"); // Error : Since we have used routing in this component so we can use it only in children component like Login, Browse etc
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <div className="absolute px-8 py-2 bg-gradient-to-b from-black w-screen z-10 flex justify-between">
+    <div className="absolute px-8 py-2 bg-gradient-to-b from-black w-screen z-10 flex justify-between bg-opacity-80">
       <img
-        className="w-48 mx-16"
-        src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production/consent/87b6a5c0-0104-4e96-a291-092c11350111/01938dc4-59b3-7bbc-b635-c4131030e85f/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png
-"
+        className="w-44 mx-6"
+        src={LOGO}
         alt="netflix-logo"
       />
       {user && <div className="flex p-2">
         <img
-          className="w-10 h-10 m-4 rounded"
+          className="w-10 h-10 m-2 rounded"
           src = {user.photoURL}
           alt="user-logo"
         />
-        <button onClick={handleSignOut}>Sign out</button>
+        <button onClick={handleSignOut} className="font-bold text-white">Sign out</button>
       </div>}
     </div>
   );
 };
 
 export default Header;
+
+
+

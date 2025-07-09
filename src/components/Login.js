@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import checkValidFormData from "../utils/validateForm";
+import { checkValidData } from "../utils/validateForm";
 import { auth } from "../utils/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -10,12 +9,11 @@ import {
 } from "firebase/auth";
 import { addUser } from "../utils/userSlice";
 import { useDispatch } from "react-redux";
+import { BG_URL, USER_AVATAR } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const name = useRef(null);
@@ -23,18 +21,8 @@ const Login = () => {
   const password = useRef(null);
 
   const handleButtonClick = () => {
-    console.log(email);
-    console.log(password);
-    const message = isSignInForm
-      ? checkValidFormData(email.current.value, password.current.value)
-      : checkValidFormData(
-          email.current.value,
-          password.current.value,
-          name.current.value
-        );
-
+    const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
-
     if (message) return;
 
     if (!isSignInForm) {
@@ -48,7 +36,7 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL: "https://avatars.githubusercontent.com/u/88403275?v=4",
+            photoURL: USER_AVATAR,
           })
             .then(() => {
               // Profile updated!
@@ -61,13 +49,9 @@ const Login = () => {
                   photoURL: photoURL,
                 })
               );
-              navigate("/browse");
-              console.log(user);
             })
             .catch((error) => {
-              // An error occurred
-              setErrorMessage(errorMessage);
-              // ...
+              setErrorMessage(error.message);
             });
         })
         .catch((error) => {
@@ -84,8 +68,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          navigate("/browse");
-          console.log(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -103,10 +85,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/75b0ed49-75ab-4a63-bd45-37bc2c95cb73/web/IN-en-20250623-TRIFECTA-perspective_ae5833b7-6ce5-4e88-853e-014f38c506f1_large.jpg"
-          alt="background-logo"
-        />
+        <img className="h-screen w-screen" src={BG_URL} alt="background-logo" />
       </div>
 
       <form
