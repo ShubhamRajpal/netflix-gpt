@@ -13,15 +13,12 @@ const useUpcomingMovies = () => {
     );
 
     const data = await response.json();
-
-    console.log(data);
-
     dispatch(addUpcomingMovies(data.results));
   };
 
   useEffect(() => {
     getUpcomingMovies();
-  },[]);
+  }, []);
 };
 
 export default useUpcomingMovies;
