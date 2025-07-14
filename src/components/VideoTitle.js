@@ -1,10 +1,10 @@
 const VideoTitle = ({ title, overview }) => {
   return (
-    <div className="pt-[20%] px-16 absolute w-screen aspect-video bg-gradient-to-r from-black">
-      <h1 className="text-6xl font-bold text-white">{title}</h1>
-      <p className="py-2 text-lg w-3/5 text-white">{overview}</p>
+    <div className="pt-[20%] md:px-16 px-8 absolute w-screen aspect-video bg-gradient-to-r from-black">
+      <h1 className="md:text-6xl text-lg font-bold text-white">{title}</h1>
+      <p className="py-2 text-lg w-3/5 text-white hidden md:inline-block">{overview}</p>
       <div className="flex justify-start py-4">
-        <button className="flex justify-between bg-white text-black py-2 px-8 w-34 fill-black rounded hover:bg-opacity-80">
+        <button className="flex justify-between bg-white text-black md:py-2 md:px-8 py-1 px-3 w-34 fill-black rounded hover:bg-opacity-80">
           <svg
             className="w-4"
             xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ const VideoTitle = ({ title, overview }) => {
           </svg>
           <span className="text-xl px-2 ">Play</span>
         </button>
-        <button className="flex mx-2 justify-between text-white py-2 px-6 w-34 fill-white rounded bg-gray-500 bg-opacity-50">
+        <button className="md:flex hidden  mx-2 justify-between text-white py-2 px-6 w-34 fill-white rounded bg-gray-500 bg-opacity-50">
           <svg
             className="w-4"
             xmlns="http://www.w3.org/2000/svg"

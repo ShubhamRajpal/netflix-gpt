@@ -62,10 +62,10 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute px-8 py-2 bg-gradient-to-b from-black w-screen z-10 flex justify-between bg-opacity-80">
-      <img className="w-44 mx-6" src={LOGO} alt="netflix-logo" />
+    <div className="absolute px-8 py-2 bg-gradient-to-b from-black w-screen z-10 flex flex-col md:flex-row  justify-between bg-opacity-80">
+      <img className="w-44 md:mx-6 mx-auto" src={LOGO} alt="netflix-logo" />
       {user && (
-        <div className="flex m-4">
+        <div className="flex m-4 md:justify-end justify-between">
           {gpt.showGPTSearch && <select
             className="m-2 p-3 bg-slate-900 font-bold text-l text-white rounded"
             onChange={handleLanguageChange}>
@@ -81,7 +81,7 @@ const Header = () => {
             {gpt.showGPTSearch ? "Home" : "GPT Search"}
           </button>
           <img
-            className="w-10 h-10 m-2 rounded"
+            className="w-10 h-10 m-2 rounded hidden md:block"
             src={user?.photoURL}
             alt="user-logo"
           />
