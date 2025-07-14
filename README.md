@@ -1,5 +1,5 @@
 
-# NETFIXGPT
+# NETFLIXGPT
 
 * Create React App
 * Configured TailwindCSS
